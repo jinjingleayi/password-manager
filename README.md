@@ -2,6 +2,9 @@
 
 A simple, local-first password manager built with Vue 3, Pinia, Element Plus, and Vite. Data is encrypted at-rest and stored in the browser via localStorage. Includes password generation, copy helpers with mobile fallbacks, and responsive design.
 
+## Demo
+https://github.com/user-attachments/assets/0c2785f0-90f8-482f-b74f-468606fb5e80
+
 ## Features
 
 - URL-required entries with title, username, password
