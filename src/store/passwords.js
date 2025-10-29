@@ -10,6 +10,20 @@ export const usePasswordsStore = defineStore('passwords', {
     items: []
   }),
   actions: {
+    _generateId() {
+      const c = typeof globalThis !== 'undefined' ? globalThis.crypto : undefined
+      if (c && typeof c.randomUUID === 'function') {
+        return c.randomUUID()
+      }
+      if (c && typeof c.getRandomValues === 'function') {
+        const arr = new Uint8Array(16)
+        c.getRandomValues(arr)
+        return Array.from(arr)
+          .map(b => b.toString(16).padStart(2, '0'))
+          .join('')
+      }
+      return String(Date.now()) + Math.random().toString(16).slice(2)
+    },
     load() {
       const encrypted = loadFromLocalStorage(STORAGE_KEY)
       if (encrypted) {
@@ -22,7 +36,8 @@ export const usePasswordsStore = defineStore('passwords', {
       }
     },
     add(entry) {
-      this.items.push({ ...entry, id: crypto.randomUUID() })
+      const id = this._generateId()
+      this.items.push({ ...entry, id })
       this.persist()
     },
     update(id, updated) {

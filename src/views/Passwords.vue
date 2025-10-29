@@ -113,6 +113,10 @@ function confirmAdd() {
     ElMessage.warning('请填写用户名和密码')
     return
   }
+  // Normalize URL: add https:// if missing scheme
+  if (!/^https?:\/\//i.test(form.url)) {
+    form.url = `https://${form.url}`
+  }
   // Auto-fill title if empty: prefer hostname from URL, else username
   if (!form.title) {
     if (form.url) {
@@ -126,7 +130,12 @@ function confirmAdd() {
       form.title = 'unknown'
     }
   }
-  passwords.add({ ...form })
+  try {
+    passwords.add({ ...form })
+  } catch (e) {
+    ElMessage.error('保存失败，请重试')
+    return
+  }
   form.title = ''
   form.url = ''
   form.username = ''
@@ -156,6 +165,9 @@ function confirmEdit() {
   if (!editForm.username || !editForm.password) {
     ElMessage.warning('请填写用户名和密码')
     return
+  }
+  if (!/^https?:\/\//i.test(editForm.url)) {
+    editForm.url = `https://${editForm.url}`
   }
   passwords.update(editForm.id, {
     title: editForm.title,
